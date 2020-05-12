@@ -1,0 +1,23 @@
+apiVersion: v1
+items:
+- apiVersion: tekton.dev/v1alpha1
+  kind: PipelineResource
+  metadata:
+    name: docker-image
+  spec:
+    params:
+    - name: url
+      value: image-registry.openshift-image-registry.svc:5000/cos-liberty-tekton/liberty-hello-world
+    type: image
+- apiVersion: tekton.dev/v1alpha1
+  kind: PipelineResource
+  metadata:
+    name: git-source
+  spec:
+    params:
+    - name: revision
+      value: master
+    - name: url
+      value: https://github.com/josephdibartolo/liberty-hello-world-app
+    type: git
+kind: List
