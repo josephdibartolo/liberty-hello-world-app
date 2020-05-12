@@ -1,11 +1,11 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: cos-liberty
+  name: hello-liberty
   annotations:
     description: The web server's http port.
   labels:
-    application: cos-liberty
+    application: hello-liberty
 spec:
   ports:
     - name: 9080-tcp
@@ -16,11 +16,7 @@ spec:
       port: 9443
       targetPort: 9443
       protocol: TCP
-    - name: http
-      port: 9082
-      targetPort: 9082
-      protocol: TCP
   selector:
-    deploymentConfig: cos-liberty
+    deploymentConfig: hello-liberty
   type: ClusterIP
   sessionAffinity: None
