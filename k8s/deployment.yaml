@@ -29,17 +29,6 @@ spec:
     spec:
       containers:
         - name: hello-liberty
-          env:
-            - name: DB2_HOST
-              value: db2.db2.svc
-            - name: DB2_PORT
-              value: "50000"
-            - name: DB2_DBNAME
-              value: ORDERDB
-            - name: DB2_USER
-              value: db2inst1
-            - name: DB2_PASSWORD
-              value: db2inst1
           image: <DOCKER_IMAGE>
           imagePullPolicy: Always
           livenessProbe:
@@ -56,9 +45,6 @@ spec:
               protocol: TCP
             - containerPort: 9443
               name: 9443-tcp
-              protocol: TCP
-            - containerPort: 9082
-              name: http
               protocol: TCP
           readinessProbe:
             tcpSocket:
