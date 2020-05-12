@@ -1,15 +1,15 @@
 kind: Route
 apiVersion: v1
-id: cos-liberty-http
+id: hello-liberty-http
 metadata:
-  name: cos-liberty
+  name: hello-liberty
   annotations:
     description: Route for application's http service.
   labels:
-    application: cos-liberty
+    application: hello-liberty
 spec:
   to:
-    name: cos-liberty
+    name: hello-liberty
   port:
     targetPort: 9443-tcp
   tls:
