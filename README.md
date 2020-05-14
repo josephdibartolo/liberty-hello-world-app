@@ -64,6 +64,7 @@ oc adm policy add-scc-to-user ibm-websphere-scc -z websphere -n hello-liberty-te
 ## Update and Deploy Tekton Pipeline
 
 Import the Tekton Tasks, Pipeline and PipelineResources in to the project using the commands shown below:
+
 ```
 cd ../tekton
 oc apply -f gse-apply-manifests-pvc-task.yaml
@@ -75,6 +76,7 @@ oc apply -f gse-build-pipeline-resources.yaml
 ## Run the Pipeline
 
 The recommended way to trigger the pipeline would be via a webhook, which we will do later on in the guide. For simplicity the command line can be used now. Issue the command below to trigger the pipeline:
+
 ```
 tkn pipeline start gse-build-deploy-pvc-pipeline -n hello-liberty-tekton
 ```
@@ -108,12 +110,14 @@ Select `public_repo` scope to enable git clone, and `write:repo_hook` scope so t
 The GitHub UI will never again let you see this token, so be sure to save the token in your password manager or somewhere safe that you can access later on.
 
 Create the shell variables below, replacing <GIT_USERNAME> and <GIT_TOKEN> and keeping the quotes:
+
 ```
 export GIT_USERNAME='<GIT_USERNAME>'
 export GIT_TOKEN='<GIT_TOKEN>'
 ```
 
 Create and expose the Tekton EventListener:
+
 ```
 oc apply -f triggers/ -n $NAMESPACE
 oc create route edge --service=el-cicd -n hello-liberty-tekton
@@ -122,16 +126,19 @@ echo "https://$GIT_WEBHOOK_URL"
 ```
 
 Set the GIT_REPO_NAME to name of the Code Git repo like tutorial-tekton-argocd-code
+
 ```
 export GIT_REPO_NAME='<GIT_REPO_NAME>'
 ```
 
 Set the GIT_REPO_OWNER to name of the Code Git repo like csantanapr
+
 ```
 export GIT_REPO_OWNER='<GIT_REPO_OWNER>'
 ```
 
 Run curl to create the web hook:
+
 ```
 curl -v -X POST -u $GIT_USERNAME:$GIT_TOKEN \
 -d "{\"name\": \"web\",\"active\": true,\"events\": [\"push\"],\"config\": {\"url\": \"https://$GIT_WEBHOOK_URL\",\"content_type\": \"json\",\"insecure_ssl\": \"0\"}}" \
