@@ -22,9 +22,9 @@ Continuing from here, the guide will expect that you have the desired `.war` fil
 - [Maven 3.3 (or later)](https://maven.apache.org/download.cgi)
 
 To build the app from source, run the following command from the top level folder of your cloned repo:
+
     ```
     mvn clean package
-    
     ```
 
 This will create the app's *.war* file in the **target** subfolder.
