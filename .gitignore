@@ -9,5 +9,5 @@
 **/*.tgz
 
 # Allow
-!target/*.war
-!target/*.ear
+# !target/*.war
+# !target/*.ear
