@@ -14,10 +14,6 @@ The Tekton Trigger resources used here were based on the resources linked in the
 ## Considerations and Prerequisites
 
 Start by forking this repository to your preferred Git environment.
-    ```
-    git clone https://<YOUR_GIT_ENVIRONMENT>/<YOUR_GIT_USER_NAME>/liberty-hello-world-app.git
-    cd liberty-hello-world-app
-    ```
 
 The Dockerfile included in the forked repository does **not** build the Java application. Instead, the Dockerfile uses the `.war` file already included in the `./target` directory.
 
@@ -25,10 +21,12 @@ Continuing from here, the guide will expect that you have the desired `.war` fil
 - A Java 8 (or later) JDK
 - [Maven 3.3 (or later)](https://maven.apache.org/download.cgi)
 
-To build the app from sourcem, run the following command from the top level folder of a clone of this repo:
+To build the app from source, run the following command from the top level folder of your cloned repo:
     ```
     mvn clean package
+    
     ```
+
 This will create the app's *.war* file in the **target** subfolder.
 
 *Future editions of this demo may be improved by including the build-step in the CI-CD pipeline.*
