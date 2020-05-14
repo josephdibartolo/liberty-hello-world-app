@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
-  name: gse-apply-manifests-pvc-task
+  name: gse-apply-manifests-task
 spec:
   inputs:
     resources:

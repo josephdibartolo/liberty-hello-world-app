@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1alpha1
 kind: TriggerTemplate
 metadata:
-  name: liberty-template-cicd
+  name: hello-liberty-template-cicd
 spec:
   params:
     - name: gitrevision
@@ -13,10 +13,10 @@ spec:
     - apiVersion: tekton.dev/v1alpha1
       kind: PipelineRun
       metadata:
-        generateName: cicd-run-
+        generateName: hello-liberty-cicd-run-
       spec:
         pipelineRef:
-          name: gse-build-deploy-pvc-pipeline
+          name: hello-liberty-build-deploy-pipeline
         resources:
           - name: docker-image
             resourceRef:

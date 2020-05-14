@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1alpha1
 kind: TriggerBinding
 metadata:
-  name: liberty-binding-cicd
+  name: basic-binding-cicd
 spec:
   params:
     - name: gitrevision

@@ -1,0 +1,12 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: hello-liberty
+  namespace: hello-liberty-tekton
+spec:
+  path: /
+  to:
+    kind: Service
+    name: hello-liberty
+  port:
+    targetPort: 9080

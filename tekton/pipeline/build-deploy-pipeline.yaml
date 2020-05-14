@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1alpha1
 kind: Pipeline
 metadata:
-  name: gse-build-deploy-pvc-pipeline
+  name: hello-liberty-build-deploy-pipeline
 spec:
   resources:
     - name: git-source
@@ -11,7 +11,7 @@ spec:
   tasks:
     - name: gse-build
       taskRef:
-        name: gse-buildah-pvc-task
+        name: gse-buildah-task
         kind: Task
       resources:
         inputs:
@@ -28,7 +28,7 @@ spec:
     
     - name: gse-apply-manifests
       taskRef:
-        name: gse-apply-manifests-pvc-task
+        name: gse-apply-manifests-task
         kind: Task
       resources:
         inputs:

@@ -43,7 +43,7 @@ A cluster administrator can use the file provided here with the following comman
 
 ```
 cd openshift
-oc apply -f ssc.yaml
+oc apply -f scc.yaml
 ```
 
 Create the project that will be used for the Tekton pipeline and the initial deployment of the application.
@@ -67,10 +67,10 @@ Import the Tekton Tasks, Pipeline and PipelineResources in to the project using 
 
 ```
 cd ../tekton
-oc apply -f gse-apply-manifests-pvc-task.yaml
-oc apply -f gse-buildah-pvc-task.yaml
-oc apply -f gse-build-deploy-pvc-pipeline.yaml
-oc apply -f gse-build-pipeline-resources.yaml
+oc apply -f build-deploy-pipeline.yaml
+oc apply -f build-pipeline-resources.yaml
+oc apply -f gse-apply-manifests-task.yaml
+oc apply -f gse-buildah-task.yaml
 ```
 
 ## Run the Pipeline
@@ -78,22 +78,26 @@ oc apply -f gse-build-pipeline-resources.yaml
 The recommended way to trigger the pipeline would be via a webhook, which we will do later on in the guide. For simplicity the command line can be used now. Issue the command below to trigger the pipeline:
 
 ```
-tkn pipeline start gse-build-deploy-pvc-pipeline -n hello-liberty-tekton
+tkn pipeline start hello-liberty-build-deploy-pipeline -n hello-liberty-tekton
 ```
 
 When prompted to choose the git resource, accept the default git-source value corresponding to your repository; do the same for your docker-image.
 
-In the OpenShift Container Platform UI, change to the Developer view, select the hello-liberty-tekton project and then select Pipelines. Click on the Last Run entry -> Select "Logs".
+In order to track the PipelineRun progress, run the code outputted from the previous command. It will be something like this:
+
+```
+tkn pipelinerun logs hello-liberty-build-deploy-pipeline-run-<POD_HASH> -f -n hello-liberty-tekton
+```
+
+You can also inspect the PipelineRun within the OpenShift Container Platform UI. Change to the Developer view, select the `hello-liberty-tekton` project and then select Pipelines. Click on the Last Run entry -> Select "Logs".
 
 Once both the gse-build and gse-apply-manifests steps are complete, the pipeline is finished.
 
 ## Create Route and Test
 
-Now that the pipeline is complete, validate the Hello World application is deployed and running in hello-liberty-tekton project.
+Now that the pipeline is complete, validate the Hello World application is deployed and running in `hello-liberty-tekton` project.
 
-In the OpenShift Console, navigate to Topology view and click on the hello-liberty DeploymentConfig to view deployment details, including Pods and Service.
-
-Create a Route in the Openshift UI for the hello-liberty service, and use the `9080-tcp` port, unless you want to configure TLS for the HTTPS port `9443-tcp` (which is beyond the scope of this tutorial).
+In the OpenShift Console, navigate to Topology view and click on the `hello-liberty` DeploymentConfig to view deployment details, including Pods, Service, and Route.
 
 You can test that the application is serving by clicking the Route's URI and adding `/hello` to the end of the URL in the browser to access the application. Verify that "Hello World" is displayed.
 
@@ -120,18 +124,18 @@ Create and expose the Tekton EventListener:
 
 ```
 oc apply -f triggers/ -n $NAMESPACE
-oc create route edge --service=el-cicd -n hello-liberty-tekton
-export GIT_WEBHOOK_URL=$(oc get route el-cicd -o jsonpath='{.spec.host}' -n hello-liberty-tekton)
+oc create route edge --service=el-hello-liberty-cicd -n hello-liberty-tekton
+export GIT_WEBHOOK_URL=$(oc get route el-hello-liberty-cicd -o jsonpath='{.spec.host}' -n hello-liberty-tekton)
 echo "https://$GIT_WEBHOOK_URL"
 ```
 
-Set the GIT_REPO_NAME to name of the Code Git repo like tutorial-tekton-argocd-code
+Set the GIT_REPO_NAME to name of your Git repo, like liberty-hello-world-app:
 
 ```
 export GIT_REPO_NAME='<GIT_REPO_NAME>'
 ```
 
-Set the GIT_REPO_OWNER to name of the Code Git repo like csantanapr
+Set the GIT_REPO_OWNER to name of the Git repo's owner like josephdibartolo
 
 ```
 export GIT_REPO_OWNER='<GIT_REPO_OWNER>'

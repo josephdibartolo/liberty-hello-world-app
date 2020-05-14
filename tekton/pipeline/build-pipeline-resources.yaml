@@ -7,7 +7,7 @@ items:
   spec:
     params:
     - name: url
-      value: image-registry.openshift-image-registry.svc:5000/cos-liberty-tekton/liberty-hello-world
+      value: image-registry.openshift-image-registry.svc:5000/hello-liberty-tekton/hello-liberty
     type: image
 - apiVersion: tekton.dev/v1alpha1
   kind: PipelineResource
