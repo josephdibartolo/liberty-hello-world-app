@@ -149,3 +149,7 @@ curl -v -X POST -u $GIT_USERNAME:$GIT_TOKEN \
 -d "{\"name\": \"web\",\"active\": true,\"events\": [\"push\"],\"config\": {\"url\": \"https://$GIT_WEBHOOK_URL\",\"content_type\": \"json\",\"insecure_ssl\": \"0\"}}" \
 -L https://api.github.com/repos/$GIT_REPO_OWNER/$GIT_REPO_NAME/hooks
 ```
+
+## (Continued) Test the Webhook
+
+Modify the `HelloWorldServlet.java`. Commit the new file and push; you should see a new pipeline being instantiated, the the new DeploymentConfig should roll out, presenting the updated webpage.
