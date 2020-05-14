@@ -66,7 +66,7 @@ oc adm policy add-scc-to-user ibm-websphere-scc -z websphere -n hello-liberty-te
 Import the Tekton Tasks, Pipeline and PipelineResources in to the project using the commands shown below:
 
 ```
-cd ../tekton
+cd ../tekton/pipeline
 oc apply -f build-deploy-pipeline.yaml
 oc apply -f build-pipeline-resources.yaml
 oc apply -f gse-apply-manifests-task.yaml
@@ -93,7 +93,7 @@ You can also inspect the PipelineRun within the OpenShift Container Platform UI.
 
 Once both the gse-build and gse-apply-manifests steps are complete, the pipeline is finished.
 
-## Create Route and Test
+## Test the Route
 
 Now that the pipeline is complete, validate the Hello World application is deployed and running in `hello-liberty-tekton` project.
 
@@ -123,6 +123,7 @@ export GIT_TOKEN='<GIT_TOKEN>'
 Create and expose the Tekton EventListener:
 
 ```
+cd ..
 oc apply -f triggers/ -n $NAMESPACE
 oc create route edge --service=el-hello-liberty-cicd -n hello-liberty-tekton
 export GIT_WEBHOOK_URL=$(oc get route el-hello-liberty-cicd -o jsonpath='{.spec.host}' -n hello-liberty-tekton)
