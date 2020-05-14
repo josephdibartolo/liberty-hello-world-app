@@ -22,6 +22,7 @@ Continuing from here, the guide will expect that you have the desired `.war` fil
 - [Maven 3.3 (or later)](https://maven.apache.org/download.cgi)
 
 To build the app from source, run the following command from the top level folder of your cloned repo:
+
 ```
 mvn clean package
 ```
@@ -39,6 +40,7 @@ Refer to the [lab instructions](https://github.com/IBMAppModernization/app-moder
 In order to deploy and run the WebSphere Liberty Docker image in an OpenShift cluster, we first need to configure certain security aspects for the cluster. The Security Context Constraint provided here grants the service account that the WebSphere Liberty Docker container is running under the required privileges to function correctly.
 
 A cluster administrator can use the file provided here with the following command to create the Security Context Constraint (SCC):
+
 ```
 cd openshift
 oc apply -f ssc.yaml
@@ -46,12 +48,14 @@ oc apply -f ssc.yaml
 
 Create the project that will be used for the Tekton pipeline and the initial deployment of the application.
 Issue the command shown below to create the project:
+
 ```
 oc new-project hello-liberty-tekton
 ```
 
 It is a good Kubernetes practice to create a service account for your applications. A service account provides an identity for processes that run in a Pod. In this step we will create a new service account with the name websphere and add the Security Context Constraint created above to it.
 Issue the commands shown below to create the websphere service account and bind the ibm-websphere-scc to it in each of the projects:
+
 ```
 oc create serviceaccount websphere -n hello-liberty-tekton
 oc adm policy add-scc-to-user ibm-websphere-scc -z websphere -n hello-liberty-tekton
