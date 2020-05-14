@@ -1,0 +1,12 @@
+apiVersion: tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: liberty-cicd
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - name: liberty-cicd-trig
+      binding:
+        name: liberty-binding-cicd
+      template:
+        name: liberty-template-cicd

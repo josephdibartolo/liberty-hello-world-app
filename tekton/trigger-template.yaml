@@ -1,0 +1,31 @@
+apiVersion: tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: liberty-template-cicd
+spec:
+  params:
+    - name: gitrevision
+      description: The git revision
+      default: master
+    - name: gitrepositoryurl
+      description: The git repository url
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1alpha1
+      kind: PipelineRun
+      metadata:
+        generateName: cicd-run-
+      spec:
+        pipelineRef:
+          name: gse-build-deploy-pvc-pipeline
+        resources:
+          - name: docker-image
+            resourceRef:
+              name: docker-image
+          - name: git-source
+            resourceSpec:
+              type: git
+              params:
+                - name: revision
+                  value: $(params.gitrevision)
+                - name: url
+                  value: $(params.gitrepositoryurl)
