@@ -22,7 +22,9 @@ Continuing from here, the guide will expect that you have the desired `.war` fil
 - [Maven 3.3 (or later)](https://maven.apache.org/download.cgi)
 
 To build the app from source, run the following command from the top level folder of your cloned repo:
-    mvn clean package
+```
+mvn clean package
+```
 
 This will create the app's *.war* file in the **target** subfolder.
 
@@ -37,22 +39,22 @@ Refer to the [lab instructions](https://github.com/IBMAppModernization/app-moder
 In order to deploy and run the WebSphere Liberty Docker image in an OpenShift cluster, we first need to configure certain security aspects for the cluster. The Security Context Constraint provided here grants the service account that the WebSphere Liberty Docker container is running under the required privileges to function correctly.
 
 A cluster administrator can use the file provided here with the following command to create the Security Context Constraint (SCC):
-    ```
-    cd openshift
-    oc apply -f ssc.yaml
-    ```
+```
+cd openshift
+oc apply -f ssc.yaml
+```
 
 Create the project that will be used for the Tekton pipeline and the initial deployment of the application.
 Issue the command shown below to create the project:
-    ```
-    oc new-project hello-liberty-tekton
-    ```
+```
+oc new-project hello-liberty-tekton
+```
 
 It is a good Kubernetes practice to create a service account for your applications. A service account provides an identity for processes that run in a Pod. In this step we will create a new service account with the name websphere and add the Security Context Constraint created above to it.
 Issue the commands shown below to create the websphere service account and bind the ibm-websphere-scc to it in each of the projects:
 ```
-    oc create serviceaccount websphere -n hello-liberty-tekton
-    oc adm policy add-scc-to-user ibm-websphere-scc -z websphere -n hello-liberty-tekton
+oc create serviceaccount websphere -n hello-liberty-tekton
+oc adm policy add-scc-to-user ibm-websphere-scc -z websphere -n hello-liberty-tekton
 ```
 
 ## Update and Deploy Tekton Pipeline
@@ -69,9 +71,9 @@ oc apply -f gse-build-pipeline-resources.yaml
 ## Run the Pipeline
 
 The recommended way to trigger the pipeline would be via a webhook, which we will do later on in the guide. For simplicity the command line can be used now. Issue the command below to trigger the pipeline:
-    ```
-    tkn pipeline start gse-build-deploy-pvc-pipeline -n hello-liberty-tekton
-    ```
+```
+tkn pipeline start gse-build-deploy-pvc-pipeline -n hello-liberty-tekton
+```
 
 When prompted to choose the git resource, accept the default git-source value corresponding to your repository; do the same for your docker-image.
 
@@ -102,32 +104,32 @@ Select `public_repo` scope to enable git clone, and `write:repo_hook` scope so t
 The GitHub UI will never again let you see this token, so be sure to save the token in your password manager or somewhere safe that you can access later on.
 
 Create the shell variables below, replacing <GIT_USERNAME> and <GIT_TOKEN> and keeping the quotes:
-    ```
-    export GIT_USERNAME='<GIT_USERNAME>'
-    export GIT_TOKEN='<GIT_TOKEN>'
-    ```
+```
+export GIT_USERNAME='<GIT_USERNAME>'
+export GIT_TOKEN='<GIT_TOKEN>'
+```
 
 Create and expose the Tekton EventListener:
-    ```
-    oc apply -f triggers/ -n $NAMESPACE
-    oc create route edge --service=el-cicd -n hello-liberty-tekton
-    export GIT_WEBHOOK_URL=$(oc get route el-cicd -o jsonpath='{.spec.host}' -n hello-liberty-tekton)
-    echo "https://$GIT_WEBHOOK_URL"
-    ```
+```
+oc apply -f triggers/ -n $NAMESPACE
+oc create route edge --service=el-cicd -n hello-liberty-tekton
+export GIT_WEBHOOK_URL=$(oc get route el-cicd -o jsonpath='{.spec.host}' -n hello-liberty-tekton)
+echo "https://$GIT_WEBHOOK_URL"
+```
 
 Set the GIT_REPO_NAME to name of the Code Git repo like tutorial-tekton-argocd-code
-    ```
-    export GIT_REPO_NAME='<GIT_REPO_NAME>'
-    ```
+```
+export GIT_REPO_NAME='<GIT_REPO_NAME>'
+```
 
 Set the GIT_REPO_OWNER to name of the Code Git repo like csantanapr
-    ```
-    export GIT_REPO_OWNER='<GIT_REPO_OWNER>'
-    ```
+```
+export GIT_REPO_OWNER='<GIT_REPO_OWNER>'
+```
 
 Run curl to create the web hook:
-    ```
-    curl -v -X POST -u $GIT_USERNAME:$GIT_TOKEN \
-    -d "{\"name\": \"web\",\"active\": true,\"events\": [\"push\"],\"config\": {\"url\": \"https://$GIT_WEBHOOK_URL\",\"content_type\": \"json\",\"insecure_ssl\": \"0\"}}" \
-    -L https://api.github.com/repos/$GIT_REPO_OWNER/$GIT_REPO_NAME/hooks
-    ```
+```
+curl -v -X POST -u $GIT_USERNAME:$GIT_TOKEN \
+-d "{\"name\": \"web\",\"active\": true,\"events\": [\"push\"],\"config\": {\"url\": \"https://$GIT_WEBHOOK_URL\",\"content_type\": \"json\",\"insecure_ssl\": \"0\"}}" \
+-L https://api.github.com/repos/$GIT_REPO_OWNER/$GIT_REPO_NAME/hooks
+```
