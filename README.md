@@ -158,6 +158,9 @@ To uninstall the application and the pipeline, run the following commands:
 
 ```
 oc delete -f k8s
+oc delete -f tekton/pipeline
+oc delete -f tekton/triggers
+oc delete project hello-liberty-tekton
 ```
 
 Make sure to delete the webhook from your Git repository as well!
