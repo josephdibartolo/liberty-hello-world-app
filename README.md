@@ -15,9 +15,7 @@ The Tekton Trigger resources used here were based on the resources linked in the
 
 Start by forking this repository to your preferred Git environment.
 
-The Dockerfile included in the forked repository does **not** build the Java application. Instead, the Dockerfile uses the `.war` file already included in the `./target` directory.
-
-Continuing from here, the guide will expect that you have the desired `.war` file in the `./target` directory of your forked repository. If you want to modify the application included here, you'll need to rebuild the WebSphere application and push your new `.war` to Git. Building the app from source (locally) requires:
+Building the app from source (locally) requires:
 - A Java 8 (or later) JDK
 - [Maven 3.3 (or later)](https://maven.apache.org/download.cgi)
 
@@ -29,7 +27,7 @@ mvn clean package
 
 This will create the app's *.war* file in the **target** subfolder.
 
-*Future editions of this demo may be improved by including the build-step in the CI-CD pipeline.*
+The Dockerfile included here runs the `mvn clean package` command every time an image is built, so your images will always reflect builds of the most-recent codebase.
 
 ## Testing the App Locally
 
@@ -124,7 +122,7 @@ Create and expose the Tekton EventListener:
 
 ```
 cd ..
-oc apply -f triggers/ -n $NAMESPACE
+oc apply -f triggers/ -n hello-liberty-tekton
 oc create route edge --service=el-hello-liberty-cicd -n hello-liberty-tekton
 export GIT_WEBHOOK_URL=$(oc get route el-hello-liberty-cicd -o jsonpath='{.spec.host}' -n hello-liberty-tekton)
 echo "https://$GIT_WEBHOOK_URL"
@@ -153,3 +151,23 @@ curl -v -X POST -u $GIT_USERNAME:$GIT_TOKEN \
 ## (Continued) Test the Webhook
 
 Modify the `HelloWorldServlet.java`. Commit the new file and push; you should see a new pipeline being instantiated, the the new DeploymentConfig should roll out, presenting the updated webpage.
+
+## Uninstall
+
+To uninstall the application and the pipeline, run the following commands:
+
+```
+oc delete -f k8s
+```
+
+Make sure to delete the webhook from your Git repository as well!
+
+## Conclusion
+
+Thanks for exploring this demo! I hope you enjoyed learning how Tekton can be used to create a fully-automated CI-CD pipeline for a Liberty application on Openshift!
+
+If you have any questions about anything in the codebase, or about any of the resources we've created and how they work, feel free to email me! 
+
+```
+joseph.dibartolo@ibm.com
+```
