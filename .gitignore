@@ -8,6 +8,9 @@
 .project
 **/*.tgz
 
+# application.yaml can't be applied by Tekton right now.
+k8s/application.yaml
+
 # Allow
 # !target/*.war
 # !target/*.ear

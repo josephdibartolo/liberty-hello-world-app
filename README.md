@@ -11,7 +11,7 @@ The Tekton Trigger resources used here were based on the resources linked in the
 
 # Step-by-Step Guide to Deploying on Openshift
 
-## Considerations and Prerequisites
+### Considerations and Prerequisites
 
 Start by forking this repository to your preferred Git environment.
 
@@ -29,11 +29,11 @@ This will create the app's *.war* file in the **target** subfolder.
 
 The Dockerfile included here runs the `mvn clean package` command every time an image is built, so your images will always reflect builds of the most-recent codebase.
 
-## Testing the App Locally
+### Testing the App Locally
 
 Refer to the [lab instructions](https://github.com/IBMAppModernization/app-modernization-liberty-on-docker) in the accompanying lab exercise to run the app on Docker.
 
-## Set-Up Openshift Environment
+### Set-Up Openshift Environment
 
 In order to deploy and run the WebSphere Liberty Docker image in an OpenShift cluster, we first need to configure certain security aspects for the cluster. The Security Context Constraint provided here grants the service account that the WebSphere Liberty Docker container is running under the required privileges to function correctly.
 
@@ -59,7 +59,7 @@ oc create serviceaccount websphere -n hello-liberty-tekton
 oc adm policy add-scc-to-user ibm-websphere-scc -z websphere -n hello-liberty-tekton
 ```
 
-## Update and Deploy Tekton Pipeline
+### Update and Deploy Tekton Pipeline
 
 Import the Tekton Tasks, Pipeline and PipelineResources in to the project using the commands shown below:
 
@@ -71,7 +71,7 @@ oc apply -f gse-apply-manifests-task.yaml
 oc apply -f gse-buildah-task.yaml
 ```
 
-## Run the Pipeline
+### Run the Pipeline
 
 The recommended way to trigger the pipeline would be via a webhook, which we will do later on in the guide. For simplicity the command line can be used now. Issue the command below to trigger the pipeline:
 
@@ -91,7 +91,7 @@ You can also inspect the PipelineRun within the OpenShift Container Platform UI.
 
 Once both the gse-build and gse-apply-manifests steps are complete, the pipeline is finished.
 
-## Test the Route
+### Test the Route
 
 Now that the pipeline is complete, validate the Hello World application is deployed and running in `hello-liberty-tekton` project.
 
@@ -99,7 +99,7 @@ In the OpenShift Console, navigate to Topology view and click on the `hello-libe
 
 You can test that the application is serving by clicking the Route's URI and adding `/hello` to the end of the URL in the browser to access the application. Verify that "Hello World" is displayed.
 
-## (Advanced) Set-Up Git Webhook via Tekton EventListener
+### (Advanced) Set-Up Git Webhook via Tekton EventListener
 
 This is only possible if your OpenShift cluster is accessible from your github server (ie. github.com).
 
@@ -148,11 +148,11 @@ curl -v -X POST -u $GIT_USERNAME:$GIT_TOKEN \
 -L https://api.github.com/repos/$GIT_REPO_OWNER/$GIT_REPO_NAME/hooks
 ```
 
-## (Continued) Test the Webhook
+### (Continued) Test the Webhook
 
 Modify the `HelloWorldServlet.java`. Commit the new file and push; you should see a new pipeline being instantiated, the the new DeploymentConfig should roll out, presenting the updated webpage.
 
-## Uninstall
+### Uninstall
 
 To uninstall the application and the pipeline, run the following commands:
 
@@ -165,7 +165,34 @@ oc delete project hello-liberty-tekton
 
 Make sure to delete the webhook from your Git repository as well!
 
-## Conclusion
+# Cloud Pak 4 Applications Appendix
+
+## kApplicationNavigator
+
+To have your application's components recognized in kAppNav, create the following resource:
+
+```
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  name: hello-liberty-app
+  namespace: hello-liberty-tekton
+spec:
+  componentKinds:
+  - group: hello-services
+    kind: Service
+  - group: hello-dcs
+    kind: DeploymentConfig
+  - group: hello-pods
+    kind: Pod
+  - group: hello-routes
+    kind: Route
+  selector:
+    matchLabels:
+      solution: hello-liberty
+```
+
+# Conclusion
 
 Thanks for exploring this demo! I hope you enjoyed learning how Tekton can be used to create a fully-automated CI-CD pipeline for a Liberty application on Openshift!
 
