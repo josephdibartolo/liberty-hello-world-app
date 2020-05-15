@@ -3,6 +3,8 @@ kind: Route
 metadata:
   name: hello-liberty
   namespace: hello-liberty-tekton
+  labels:
+    solution: hello-liberty
 spec:
   path: /
   to:

@@ -3,7 +3,9 @@ apiVersion: apps.openshift.io/v1
 metadata:
   name: hello-liberty
   labels:
-    application: hello-liberty
+    solution: hello-liberty
+  annotations:
+    kappnav.subkind: Liberty
 spec:
   strategy:
     type: Rolling    
@@ -15,7 +17,7 @@ spec:
       updatePeriodSeconds: 1
     resources: {}
   selector:
-    application: hello-liberty
+    solution: hello-liberty
     deploymentConfig: hello-liberty
   replicas: 1
   triggers:
@@ -23,7 +25,7 @@ spec:
   template:
     metadata:
       labels:
-        application: hello-liberty
+        solution: hello-liberty
         deploymentConfig: hello-liberty
       name: hello-liberty
     spec:

@@ -5,7 +5,7 @@ metadata:
   annotations:
     description: The web server's http port.
   labels:
-    application: hello-liberty
+    solution: hello-liberty
 spec:
   ports:
     - name: 9080-tcp
