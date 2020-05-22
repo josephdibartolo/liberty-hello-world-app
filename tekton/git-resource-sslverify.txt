@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: wizzbang-git
+  namespace: default
+spec:
+  type: git
+  params:
+    - name: url
+      value: https://github.com/wizzbangcorp/wizzbang.git
+    - name: revision
+      value: master
+    - name: sslVerify
+      value: false
